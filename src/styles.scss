@@ -1,1 +1,24 @@
 /* You can add global styles to this file, and also import other style files */
+// html,
+// body {
+//     height: 100%;
+//     width: 100%;
+//     /* Asegúrate de que el body toma toda la altura de la página */
+//     margin: 0;
+//     /* Elimina el margen por defecto */
+//     padding: 0;
+//     /* Elimina el padding por defecto */
+// }
+// app-root {
+//     height: 90%;
+//     width: 100%;
+//     /* Asegúrate de que el body toma toda la altura de la página */
+//     margin: 0;
+//     /* Elimina el margen por defecto */
+//     padding: 0;
+//     /* Elimina el padding por defecto */
+// }
+body {
+    margin: 0;
+    padding: 0;
+}

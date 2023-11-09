@@ -1,0 +1,25 @@
+<div class="container">
+    <div class="card-container">
+        <div class="card" [ngClass]="{'is-flipped': isFlipped, 'no-hover': disableHover}" (click)="flipCard()">
+            <div class="card-face card-front">
+                <!-- Contenido del frente de la carta, por ejemplo, un número y un símbolo -->
+                <div class="card-value card-index top-left"></div>
+                <div class="card-index top-left">
+                    <div class="index-value">{{ cardValue }}</div>
+                    <div class="suit">&hearts;</div>
+                  </div>
+                  <div class="card-index bottom-right">
+                    <div class="index-value">{{ cardValue }}</div>
+                    <div class="suit">&hearts;</div>
+                  </div>
+                <!-- Agrega símbolos o imágenes si es necesario -->
+                <div class="card-main">
+                    <span class="suit large">&hearts;</span>
+                  </div>
+            </div>
+            <div class="card-face card-back">
+                <!-- Contenido del dorso de la carta -->
+            </div>
+        </div>
+    </div>
+</div>
