@@ -1,1 +1,9 @@
-<table></table>
+<div #table_content class="table-content">
+  <div class="card-table">
+  @if (cardsReady) {   
+    @for (item of cards; track $index) {
+      <card [cardEntity]="item"></card>
+    }
+  } 
+  </div>
+</div>
