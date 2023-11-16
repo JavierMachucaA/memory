@@ -1,9 +1,17 @@
 <div #table_content class="table-content">
-  <div class="card-table">
-  @if (cardsReady) {   
-    @for (item of cards; track $index) {
-      <card [cardEntity]="item"></card>
+  <!-- <div   class="card-table"> -->
+  <table>
+    @if (cardsReady) {
+      @for (row of cards; track $index) {
+        <tr>
+          @for (item of row; track $index) {
+            <td>
+              <card [cardEntity]="item"></card>
+            </td>
+          }
+        </tr>
+      }
     }
-  } 
-  </div>
+  </table>
+  <!-- </div> -->
 </div>

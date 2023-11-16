@@ -7,33 +7,38 @@ import { CardEntity } from '../../domain/card.entity';
 export class CalculateCardsService {
   private _heightTable: number = 0;
   private _widthTable: number = 0;
-  private _cardsCount: number = 0;
+  private _cardsTotalPoolCount: number = 0;
   private _cardWidth: number = 0;
-
   private _cardHeight: number = 0;
-
+  private _paddingXY: number = 0;
+  private _gapXY: number = 0;
   private _cardsPool: CardEntity[] = [];
 
+  public cardsRowCount: number = 0;
+  public rowCount: number = 0;
+  
   constructor() { }
 
   public calculateCards() : number{
     this.cardWidth = 200;
     this.cardHeight = 300;
-    const margenX = 10; // Margen horizontal entre tarjetas
-    const margenY = 10; // Margen vertical entre tarjetas
+    this.paddingXY = 10;
+    this.gapXY = 10;
 
     const anchoTable = this.widthTable; // Ancho disponible del componente table
     const altoTable = this.heightTable; // Alto disponible del componente table
-
-    // Calcular tarjetas por fila y columna
-    const tarjetasPorFila = Math.floor(anchoTable / (this._cardWidth + margenX));
-    const tarjetasPorColumna = Math.floor(altoTable / (this._cardWidth + margenY));
-
-    // Calcular número total de tarjetas
-    this.cardsCount = tarjetasPorFila * tarjetasPorColumna;
-    console.log(this.cardsCount);
     
-    return this.cardsCount;
+    // Calcular tarjetas por fila y columna
+    this.cardsRowCount = Math.floor( altoTable/ (this._cardWidth + this.paddingXY ));
+    this.rowCount = Math.floor( anchoTable/ (this._cardHeight + this.paddingXY ));
+    
+    // Calcular número total de tarjetas
+    this.cardsTotalPoolCount = this.cardsRowCount * this.rowCount;
+    if (this.cardsTotalPoolCount%2!=0) {
+      this.cardsTotalPoolCount-=1;
+    }
+    console.log(this.cardsTotalPoolCount)
+    return this.cardsTotalPoolCount;
   }
 
   public get heightTable(): number {
@@ -51,12 +56,12 @@ export class CalculateCardsService {
     this._widthTable = value;
   }
   
-  public get cardsCount(): number {
-    return this._cardsCount;
+  public get cardsTotalPoolCount(): number {
+    return this._cardsTotalPoolCount;
   }
   
-  public set cardsCount(value: number) {
-    this._cardsCount = value;
+  public set cardsTotalPoolCount(value: number) {
+    this._cardsTotalPoolCount = value;
   }
 
   public get cardsPool(): CardEntity[] {
@@ -78,5 +83,17 @@ export class CalculateCardsService {
   public set cardHeight(value: number) {
     this._cardHeight = value;
   }
+  public get paddingXY(): number {
+    return this._paddingXY;
+  }
+  public set paddingXY(value: number) {
+    this._paddingXY = value;
+  }
   
+  public get gapXY(): number {
+    return this._gapXY;
+  }
+  public set gapXY(value: number) {
+    this._gapXY = value;
+  }
 }

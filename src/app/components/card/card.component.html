@@ -1,6 +1,6 @@
 <div class="container">
     <div class="card-container">
-        <div #card class="card" [ngClass]="{'is-flipped': isFlipped, 'no-hover': disableHover, 'width': cardEntity.width, 'height':cardEntity.height}" (click)="flipCard()">
+        <div #card class="card" [ngClass]="{'is-flipped': isFlipped, 'no-hover': disableHover}" (click)="flipCard()" [style.width.px]="cardEntity.width" [style.height.px]="cardEntity.height">
             <div class="card-face card-front">
                 <!-- Contenido del frente de la carta, por ejemplo, un número y un símbolo -->
                 <div class="card-value card-index top-left"></div>

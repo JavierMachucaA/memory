@@ -1,6 +1,6 @@
 .card {
-    width: 200px;
-    height: 280px;
+    // width: 200px;
+    // height: 280px;
     border-radius: 10px;
     perspective: 1000px;
     position: relative;
@@ -8,7 +8,7 @@
     transform-style: preserve-3d;
     transition: transform 0.5s;
     cursor: pointer;
-    margin:0%;
+    // margin:2px;
   }
   
   .card-face {
