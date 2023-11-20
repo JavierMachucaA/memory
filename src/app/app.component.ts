@@ -5,11 +5,12 @@ import { CardComponent } from './components/card/card.component';
 import { CardEntity } from './domain/card.entity';
 import { CalculateCardsService } from './services/logic/calculate-cards.service';
 import { CardContentService } from './services/logic/card-content.service';
+import { ScoreBoardComponent } from './components/score-board/score-board.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, CardComponent,],
+  imports: [CommonModule, RouterOutlet, CardComponent,ScoreBoardComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
@@ -21,15 +22,30 @@ export class AppComponent implements AfterViewInit {
   public cardsReady: boolean = false;
   public cardsRowCount: number = 0;
   public rowCount: number = 0;
+  public showPopup = false;
+  public elm!: HTMLElement;
+  
 
   @ViewChild('table_content') elemento!: ElementRef;
+  @ViewChild('myModal', { static: false }) myModal!: ElementRef;
 
   constructor(private calculateCardsService: CalculateCardsService,
     private cardContentService: CardContentService
   ) { }
 
-  ngAfterViewInit() {
-    this.obtenerDimensiones();
+  ngAfterViewInit(): void {
+     this.elm = this.myModal.nativeElement as HTMLElement;
+  }
+  
+  close(): void {
+      this.elm.classList.remove('show');
+      setTimeout(() => {
+        this.elm.style.width = '0';
+      }, 75);
+  }
+  open(): void {
+      this.elm.classList.add('show');
+      this.elm.style.width = '100vw';
   }
 
   obtenerDimensiones() {

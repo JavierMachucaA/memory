@@ -1,0 +1,25 @@
+<div class="score-board-main">
+    <table class="center">
+        <tr>
+            <th>@if (isPlayer1Turn) {🟢} @else {🔴}</th> 
+            <th>Player 1</th>
+            <th>Player 2</th>
+            <th>@if (isPlayer2Turn) {🟢} @else {🔴}</th> 
+            <!-- <th><button (click)="changeTurn()">NEXT TURN</button></th> -->
+            <th>@if(isPlayer1Turn) {<h3>PLAYER 1 TURN</h3>} @else {<h3>PLAYER 2 TURN</h3>}</th>
+        </tr>
+        <tr>
+            <td>PAIRS</td>
+            <td>0</td>
+            <td>0</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>POINTS</td>
+            <td>0</td>
+            <td>0</td>
+            <td></td>
+        </tr>
+    </table>
+
+</div>

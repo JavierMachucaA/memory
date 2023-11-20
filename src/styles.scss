@@ -22,3 +22,17 @@ body {
     margin: 0;
     padding: 0;
 }
+
+.fade {
+    opacity: 0;
+    transition: opacity .15s linear;
+}
+.modal-backdrop.show {
+    opacity: .5;
+}
+.modal-backdrop.fade {
+    opacity: 0;
+}
+.fade.show {
+    opacity: 1;
+}
