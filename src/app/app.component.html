@@ -1,6 +1,6 @@
 <score-board></score-board>
 <div #table_content class="table-content">
-  <div   class="card-table">
+  <div   class="card-table" [class.block]="!isGameStart">
   <table >
     @if (cardsReady) {
       @for (row of cards; track $index) {
@@ -16,4 +16,3 @@
   </table>
   </div>
 </div>
-<div class="modal-backdrop fade show"></div>

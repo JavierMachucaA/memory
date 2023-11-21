@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { GameService } from '../../services/game.service';
 
 @Component({
   selector: 'score-board',
@@ -9,16 +10,25 @@ import { CommonModule } from '@angular/common';
   styleUrl: './score-board.component.scss'
 })
 export class ScoreBoardComponent {
-  public isPlayer1Turn : boolean = false;
-  public isPlayer2Turn : boolean = false;
+  constructor(public gameService: GameService) {}
 
-  public changeTurn() {
-    if ((!this.isPlayer1Turn && !this.isPlayer2Turn)) {
-      this.isPlayer1Turn = true;
-    }else {
-      this.isPlayer1Turn = !this.isPlayer1Turn;
-      this.isPlayer2Turn = !this.isPlayer2Turn;
-    }
+  public startGame() {
+    this.gameService.isGameStart = true;
+    this.gameService.changeTurn();
+  }
+
+  
+
+  //ACCESSORS
+  get isGameStart() {
+    return this.gameService.isGameStart;
+  }
+
+  get isPlayer1Turn () {
+    return this.gameService.isPlayer1Turn;
   }
   
+  get isPlayer2Turn () {
+    return this.gameService.isPlayer2Turn;
+  }
 }

@@ -40,3 +40,7 @@
 .card-table td {
   vertical-align: bottom;
 }
+
+.card-table.block {
+  filter: brightness(50%);
+}

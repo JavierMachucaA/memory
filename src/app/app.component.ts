@@ -6,6 +6,7 @@ import { CardEntity } from './domain/card.entity';
 import { CalculateCardsService } from './services/logic/calculate-cards.service';
 import { CardContentService } from './services/logic/card-content.service';
 import { ScoreBoardComponent } from './components/score-board/score-board.component';
+import { GameService } from './services/game.service';
 
 @Component({
   selector: 'app-root',
@@ -24,17 +25,18 @@ export class AppComponent implements AfterViewInit {
   public rowCount: number = 0;
   public showPopup = false;
   public elm!: HTMLElement;
-  
+  public blockCardTable = true;
 
   @ViewChild('table_content') elemento!: ElementRef;
-  @ViewChild('myModal', { static: false }) myModal!: ElementRef;
-
-  constructor(private calculateCardsService: CalculateCardsService,
-    private cardContentService: CardContentService
+  
+  constructor(
+    private calculateCardsService: CalculateCardsService,
+    private cardContentService: CardContentService,
+    private gameService: GameService
   ) { }
 
   ngAfterViewInit(): void {
-     this.elm = this.myModal.nativeElement as HTMLElement;
+     this.obtenerDimensiones();
   }
   
   close(): void {
@@ -88,12 +90,15 @@ export class AppComponent implements AfterViewInit {
     });
   }
 
-
   llenarTarjetas(totalTarjetas: number) {
     this.fillCards(totalTarjetas).then(() => {
       setTimeout(() => {
         this.cardsReady = true;
       }, 100);
     });
+  }
+
+  get isGameStart() {
+    return this.gameService.isGameStart
   }
 }
