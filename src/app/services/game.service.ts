@@ -22,6 +22,10 @@ import { Message } from '../domain/message.state';
 })
 export class GameService {
   private _isGameStart = false;
+  private pairCards: string[] = []
+  private _player1Cards: any[] = [];
+  private _player2Cards: any[] = [];
+
   /** OBSERVABLE
      Implements observable game variable on the first step admin all actions, but later separate observables for recover differents thinks like:
     1 - player turn
@@ -39,27 +43,30 @@ export class GameService {
   /**
    * ACTIONS
      TODO: actions to resolve
-      1 change turn READY and stack 2 cards
+      1 change turn READY 
       2 recieve cardValue
-      3 twinkling
-      4 disappear
-      5 get player turn
-      6 add pairs and points the player turn
-      7 flip cards
+      3 stack 2 cards
+      4 twinkling
+      5 disappear
+      6 get player turn
+      7 add pairs and points the player turn
+      8 flip cards
       
    */
 
   constructor() {
-    this.game.subscribe({
-      next: this.manageEvents.bind(this),
-      error: this.handleError.bind(this),
-    }
-    ); 
+    this.game.subscribe(
+    ((value: Message) => {
+      this.manageEvents(value)
+    }),
+    // ((error: any) => this.handleError(error)),
+    // (() => ()=>{})
+    )
   }
   
-  private manageEvents(event: any) {
+  private manageEvents(event: Message) {
     console.log(event);
-    
+    this.stackCards(event.cardValue);
   }
 
   public changeTurn() {
@@ -72,19 +79,59 @@ export class GameService {
     this.isPlayer2Turn = !this.isPlayer2Turn;
   }
 
-  private twinkling() {}
+  private twinkling() {
+    console.log("twinkling");
+  }
 
-  private disappear() {}
+  private disappear() {
+    console.log("disappear");
+  }
+  
+  private flipCards() {
+    setTimeout(() => {
+      console.log("flipCards");  
+    }, 2000);
+  }
 
-  private getPlayerTurn() {}
-  
-  private points() {}
-  
-  private flipCards() {}
+  public getScore(list: []) : number {
+    return list.length * 100;
+  }
 
   private handleError(error : any) {
     console.error(error);
-    
+  }
+
+  private stackCards(value: string) {
+    console.log(value, this.pairCards);
+    if (value != '' ) {
+      this.pairCards.push(value);
+      console.log(this.pairCards);
+    }
+
+    if (this.pairCards.length < 2) {
+      return;
+    }
+
+    console.log(this.pairCards);
+    // same card
+    if (this.pairCards[0] == this.pairCards[1]) {
+      if(this.isPlayer1Turn) {
+        console.log('match for p1:',this.pairCards)
+        this.player1Cards.push(this.pairCards[0]);
+      }
+
+      if(this.isPlayer2Turn) {
+        console.log('match for p2:',this.pairCards)
+        this.player2Cards.push(this.pairCards[0]);
+      }
+      this.twinkling();
+      this.disappear();
+    } else {
+      console.log('no match:',this.pairCards);
+      
+      this.flipCards();
+      this.changeTurn();
+    }
   }
 
 
@@ -92,6 +139,7 @@ export class GameService {
   public get  isGameStart(): boolean {
     return this._isGameStart;
   }
+  
   public set isGameStart(value: boolean) {
     this._isGameStart = value;
   }
@@ -99,6 +147,7 @@ export class GameService {
   public get isPlayer1Turn(): boolean {
     return this._isPlayer1Turn;
   }
+  
   public set isPlayer1Turn(value: boolean) {
     this._isPlayer1Turn = value;
   }
@@ -106,7 +155,25 @@ export class GameService {
   public get isPlayer2Turn(): boolean {
     return this._isPlayer2Turn;
   }
+  
   public set isPlayer2Turn(value: boolean) {
     this._isPlayer2Turn = value;
   }
+
+  public get player1Cards(): any[] {
+    return this._player1Cards;
+  }
+
+  public set player1Cards(value: any[]) {
+    this._player1Cards = value;
+  }
+  
+  public get player2Cards(): any[] {
+    return this._player2Cards;
+  }
+  
+  public set player2Cards(value: any[]) {
+    this._player2Cards = value;
+  }
+
 }
