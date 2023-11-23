@@ -71,6 +71,7 @@ export class GameService {
   }
 
   public changeTurn() {
+    
     this.game.next(this.getMessageChangeScore());
     if (!this.isPlayer1Turn && !this.isPlayer2Turn) {
       this.isPlayer1Turn = true;
@@ -78,14 +79,7 @@ export class GameService {
     }
     this.isPlayer1Turn = !this.isPlayer1Turn;
     this.isPlayer2Turn = !this.isPlayer2Turn;
-  }
-
-  private twinkling() {
-    console.log("twinkling");
-  }
-
-  private disappear() {
-    console.log("disappear");
+    console.log('change turn to', this.isPlayer1Turn, this.isPlayer2Turn);
   }
   
   private flipCards() {
@@ -110,6 +104,11 @@ export class GameService {
     console.log('stacked cards:', this.pairCards);
     
     // same card
+    this.sameCard()
+  }
+
+  private sameCard() {
+  // same card
     if (this.pairCards[0].value == this.pairCards[1].value && 
         this.pairCards[0].suite == this.pairCards[1].suite) {
       if(this.isPlayer1Turn) {
@@ -121,19 +120,17 @@ export class GameService {
         console.log('match for p2:',this.pairCards)
         this.player2Cards.push(this.pairCards[0]);
       }
-      this.twinkling();
-      this.disappear();
-      const a = this.getMessageChangeScore();
-      console.log(a);
-      this.game.next(a);
+      this.pairCards = []
+      this.game.next(this.getMessageChangeScore());
+      this.game.next(this.getMessagePairMatch());
     } else {
       console.log('no match:',this.pairCards);
       setTimeout(() => {
-      this.flipCards();
-      this.changeTurn();
+        this.flipCards();
+        this.changeTurn();
       }, 2000);
     }
-  }
+  } 
 
   private getMessageFlipCard(id: number) {
     return {
@@ -153,6 +150,12 @@ export class GameService {
         isPlayer2Turn: this._isPlayer2Turn,
         owner: Owner.SYSTEM
       }
+    }
+  }
+
+  private getMessagePairMatch() {
+    return {
+      activity: Activity.PAIR_MATCH,
     }
   }
 

@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container" [class.component-twinkling]="isTwinkling" [class.disappear]="isDisappear">
     <div class="card-container">
         <div #card class="card" [ngClass]="{'is-flipped': isFlipped, 'no-hover': disableHover}" 
             (click)="flipCard(Owner.USER)" [style.width.px]="cardEntity.width" [style.height.px]="cardEntity.height">

@@ -25,6 +25,8 @@ export class CardComponent implements AfterViewInit {
   public isFlipped = true;
   public disableHover: boolean = false;
   private game : BehaviorSubject<Message>;
+  public isTwinkling = false;
+  public isDisappear = false;
 
   constructor(private gameService: GameService) {
     CardComponent.contadorId++;
@@ -33,7 +35,6 @@ export class CardComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    
     this.game.subscribe(
       ((message: Message) => {
         this.manageMessages(message);          
@@ -42,6 +43,11 @@ export class CardComponent implements AfterViewInit {
   }
 
   private manageMessages(message: Message) {
+    this.flipCardActivity(message);
+    this.pairMatch(message);
+  }
+
+  flipCardActivity(message: Message) {
     if (message.activity == Activity.FLIP_CARD && message.flipCard) {
       const flipCard: FlipCard = message.flipCard;
       if (flipCard.idFlipCard == this.cardEntity.id && flipCard.owner == Owner.SYSTEM && !this.isFlipped) {
@@ -56,11 +62,32 @@ export class CardComponent implements AfterViewInit {
     }
     this.disableHover = true; 
     this.isFlipped = !this.isFlipped;
-
     setTimeout(() => {
       this.disableHover = false; 
       if (owner == Owner.USER)
         this.game.next({activity: Activity.STACK_CARD, stackCard: this.cardEntity });
     }, 200);
   }
+
+  private pairMatch(message: Message) {
+    if (message.activity == Activity.PAIR_MATCH) {
+      this.animateCard()
+    }
+  }
+
+  private animateCard() {
+    this.twinkling();
+    this.disappear();
+  }
+
+  private twinkling() {
+    if (!this.isFlipped)
+     this.isTwinkling = !this.isTwinkling;
+  }
+
+  private disappear() {
+    if (!this.isFlipped && !this.isDisappear)
+      this.isDisappear = !this.isDisappear;
+  }
+  
 }
