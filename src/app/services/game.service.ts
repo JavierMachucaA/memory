@@ -71,6 +71,7 @@ export class GameService {
   }
 
   public changeTurn() {
+    this.game.next(this.getMessageChangeScore());
     if (!this.isPlayer1Turn && !this.isPlayer2Turn) {
       this.isPlayer1Turn = true;
       return;
@@ -89,17 +90,13 @@ export class GameService {
   
   private flipCards() {
       console.log("flipCards");
-      this.game.next({activity: Activity.FLIP_CARD, flipCard: {idFlipCard : this.pairCards[0].id, owner: Owner.SYSTEM}})
-      this.game.next({activity: Activity.FLIP_CARD, flipCard: {idFlipCard : this.pairCards[1].id, owner: Owner.SYSTEM}})  
+      this.game.next(this.getMessageFlipCard(this.pairCards[0].id))
+      this.game.next(this.getMessageFlipCard(this.pairCards[1].id))
       this.pairCards = [];
   }
 
-  public getScore(list: []) : number {
+  public getScore(list: CardEntity[]) : number {
     return list.length * 100;
-  }
-
-  private handleError(error : any) {
-    console.error(error);
   }
 
   private stackCards(cardEntity: CardEntity) {
@@ -113,7 +110,8 @@ export class GameService {
     console.log('stacked cards:', this.pairCards);
     
     // same card
-    if (this.pairCards[0] == this.pairCards[1]) {
+    if (this.pairCards[0].value == this.pairCards[1].value && 
+        this.pairCards[0].suite == this.pairCards[1].suite) {
       if(this.isPlayer1Turn) {
         console.log('match for p1:',this.pairCards)
         this.player1Cards.push(this.pairCards[0]);
@@ -125,6 +123,9 @@ export class GameService {
       }
       this.twinkling();
       this.disappear();
+      const a = this.getMessageChangeScore();
+      console.log(a);
+      this.game.next(a);
     } else {
       console.log('no match:',this.pairCards);
       setTimeout(() => {
@@ -134,6 +135,26 @@ export class GameService {
     }
   }
 
+  private getMessageFlipCard(id: number) {
+    return {
+      activity: Activity.FLIP_CARD, 
+      flipCard: {
+        idFlipCard : id, 
+        owner: Owner.SYSTEM
+      }
+    }
+  }
+
+  private getMessageChangeScore() {
+    return {
+      activity: Activity.SCORE, 
+      score: {
+        isPlayer1Turn: this._isPlayer1Turn,
+        isPlayer2Turn: this._isPlayer2Turn,
+        owner: Owner.SYSTEM
+      }
+    }
+  }
 
   //ACCESSORS
   public get  isGameStart(): boolean {

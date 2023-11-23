@@ -1,6 +1,10 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { GameService } from '../../services/game.service';
+import { BehaviorSubject } from 'rxjs';
+import { Message } from '../../domain/message.state';
+import { Activity } from '../../domain/activity.enum';
+import { Score } from '../../domain/changeTurn.entity';
 
 @Component({
   selector: 'score-board',
@@ -10,14 +14,45 @@ import { GameService } from '../../services/game.service';
   styleUrl: './score-board.component.scss'
 })
 export class ScoreBoardComponent {
-  constructor(public gameService: GameService) {}
+  private game : BehaviorSubject<Message>;
+
+  public pairsPlayer1: number = 0;
+  public pairsPlayer2: number = 0;
+  public pointsPlayer1: number = 0;
+  public pointsPlayer2: number = 0;
+
+  constructor(public gameService: GameService) {
+    this.game = this.gameService.game;
+  }
 
   public startGame() {
     this.gameService.isGameStart = true;
     this.gameService.changeTurn();
+    this.hearGame();
   }
 
-  
+  private hearGame() {
+    this.game.subscribe(
+      ((message: Message) => {
+        console.log(message, message.activity.toString());
+        if (message.activity == Activity.SCORE && message.score) {
+          this.changeScore(message.score)
+        }
+      }),
+    );
+  }
+
+  private changeScore(score: Score) {
+    if (score.isPlayer1Turn) {
+      this.pairsPlayer1 = this.gameService.player1Cards.length;
+      this.pointsPlayer1 = this.gameService.getScore(this.gameService.player1Cards);
+    }
+
+    if (score.isPlayer2Turn) {
+      this.pairsPlayer2 = this.gameService.player2Cards.length;
+      this.pointsPlayer2 = this.gameService.getScore(this.gameService.player2Cards);
+    }
+  }
 
   //ACCESSORS
   get isGameStart() {

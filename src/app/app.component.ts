@@ -59,7 +59,7 @@ export class AppComponent implements AfterViewInit {
     this.cardsRowCount = this.calculateCardsService.cardsRowCount;
     this.rowCount = this.calculateCardsService.rowCount;
     this.valuesCards = this.cardContentService.setCardValues(this.cardsCount);
-    // console.log(this.valuesCards);
+    console.log(this.valuesCards);
     
     this.llenarTarjetas(this.cardsCount);
   }
