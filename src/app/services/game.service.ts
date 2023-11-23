@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { Message } from '../domain/message.state';
+import { Activity } from '../domain/activity.enum';
+import { CardEntity } from '../domain/card.entity';
+import { Owner } from '../domain/owner.enum';
 
 /**
  *   LOGIC
@@ -22,7 +25,7 @@ import { Message } from '../domain/message.state';
 })
 export class GameService {
   private _isGameStart = false;
-  private pairCards: string[] = []
+  private pairCards: CardEntity[] = []
   private _player1Cards: any[] = [];
   private _player2Cards: any[] = [];
 
@@ -34,7 +37,7 @@ export class GameService {
     4 - flip cards
    */
   
-  public game = new BehaviorSubject<Message>({cardValue:''});
+  public game = new BehaviorSubject<Message>({activity: Activity.STANDBY});
   
     
   private _isPlayer1Turn: boolean = false;
@@ -56,17 +59,15 @@ export class GameService {
 
   constructor() {
     this.game.subscribe(
-    ((value: Message) => {
-      this.manageEvents(value)
-    }),
-    // ((error: any) => this.handleError(error)),
-    // (() => ()=>{})
+      ((value: Message) => {
+        this.manageEvents(value)
+      }),
     )
   }
   
   private manageEvents(event: Message) {
-    console.log(event);
-    this.stackCards(event.cardValue);
+    if (event.activity == Activity.STACK_CARD && event.stackCard)
+      this.stackCards(event.stackCard);
   }
 
   public changeTurn() {
@@ -74,7 +75,6 @@ export class GameService {
       this.isPlayer1Turn = true;
       return;
     }
-    
     this.isPlayer1Turn = !this.isPlayer1Turn;
     this.isPlayer2Turn = !this.isPlayer2Turn;
   }
@@ -88,9 +88,10 @@ export class GameService {
   }
   
   private flipCards() {
-    setTimeout(() => {
-      console.log("flipCards");  
-    }, 2000);
+      console.log("flipCards");
+      this.game.next({activity: Activity.FLIP_CARD, flipCard: {idFlipCard : this.pairCards[0].id, owner: Owner.SYSTEM}})
+      this.game.next({activity: Activity.FLIP_CARD, flipCard: {idFlipCard : this.pairCards[1].id, owner: Owner.SYSTEM}})  
+      this.pairCards = [];
   }
 
   public getScore(list: []) : number {
@@ -101,18 +102,16 @@ export class GameService {
     console.error(error);
   }
 
-  private stackCards(value: string) {
-    console.log(value, this.pairCards);
-    if (value != '' ) {
-      this.pairCards.push(value);
-      console.log(this.pairCards);
+  private stackCards(cardEntity: CardEntity) {
+    if (cardEntity.value != '' ) {
+      this.pairCards.push(cardEntity);
     }
 
     if (this.pairCards.length < 2) {
       return;
     }
-
-    console.log(this.pairCards);
+    console.log('stacked cards:', this.pairCards);
+    
     // same card
     if (this.pairCards[0] == this.pairCards[1]) {
       if(this.isPlayer1Turn) {
@@ -128,9 +127,10 @@ export class GameService {
       this.disappear();
     } else {
       console.log('no match:',this.pairCards);
-      
+      setTimeout(() => {
       this.flipCards();
       this.changeTurn();
+      }, 2000);
     }
   }
 

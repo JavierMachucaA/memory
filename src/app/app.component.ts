@@ -7,6 +7,7 @@ import { CalculateCardsService } from './services/logic/calculate-cards.service'
 import { CardContentService } from './services/logic/card-content.service';
 import { ScoreBoardComponent } from './components/score-board/score-board.component';
 import { GameService } from './services/game.service';
+import { HEART } from './util/suits.constants';
 
 @Component({
   selector: 'app-root',
@@ -53,12 +54,12 @@ export class AppComponent implements AfterViewInit {
   obtenerDimensiones() {
     this.calculateCardsService.heightTable = this.elemento.nativeElement.offsetWidth;
     this.calculateCardsService.widthTable  = this.elemento.nativeElement.offsetHeight;
-    console.log(`Ancho: ${this.calculateCardsService.heightTable}px, Alto: ${this.calculateCardsService.widthTable}px`);
+    // console.log(`Ancho: ${this.calculateCardsService.heightTable}px, Alto: ${this.calculateCardsService.widthTable}px`);
     this.cardsCount = this.calculateCardsService.calculateCards();
     this.cardsRowCount = this.calculateCardsService.cardsRowCount;
     this.rowCount = this.calculateCardsService.rowCount;
     this.valuesCards = this.cardContentService.setCardValues(this.cardsCount);
-    console.log(this.valuesCards);
+    // console.log(this.valuesCards);
     
     this.llenarTarjetas(this.cardsCount);
   }
@@ -66,7 +67,7 @@ export class AppComponent implements AfterViewInit {
   fillCards(totalTarjetas: number): Promise<void> {
     return new Promise((resolve) => {
       let totalCount: number = totalTarjetas;
-      for (let i = 0; i < totalTarjetas; i += this.cardsRowCount) {
+      for (let indexRow = 0; indexRow < totalTarjetas; indexRow += this.cardsRowCount) {
         //get totaltarjetas faltantes
         let rowCreate : number = 0;
         if (totalCount > this.cardsRowCount) {
@@ -75,12 +76,15 @@ export class AppComponent implements AfterViewInit {
         } else {
           rowCreate = totalCount;
         }
-        // const listRow = Array.from(
-        //   {length: rowCreate}, 
-        //   (_, j) => new CardEntity(this.calculateCardsService.cardWidth, this.calculateCardsService.cardHeight, "A"))
         const listRow : CardEntity[]=[];
-        for(let j = 0 ; j < rowCreate; j++ ) {
-          const card : CardEntity = new CardEntity(this.calculateCardsService.cardWidth, this.calculateCardsService.cardHeight,this.valuesCards[i+j]);
+        for(let indexColumn = 0 ; indexColumn < rowCreate; indexColumn++ ) {
+          const card : CardEntity = new CardEntity(
+            indexColumn + indexRow,
+            this.calculateCardsService.cardWidth,
+            this.calculateCardsService.cardHeight,
+            this.valuesCards[indexRow+indexColumn],
+            HEART
+            );
           listRow.push(card);
         }
         

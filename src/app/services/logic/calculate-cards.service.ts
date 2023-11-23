@@ -37,7 +37,6 @@ export class CalculateCardsService {
     if (this.cardsTotalPoolCount%2!=0) {
       this.cardsTotalPoolCount-=1;
     }
-    console.log(this.cardsTotalPoolCount)
     return this.cardsTotalPoolCount;
   }
 

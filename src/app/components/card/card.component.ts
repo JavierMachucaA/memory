@@ -2,8 +2,11 @@ import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular
 import { CommonModule } from '@angular/common';
 import { CardEntity } from '../../domain/card.entity';
 import { GameService } from '../../services/game.service';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { Message } from '../../domain/message.state';
+import { Activity } from '../../domain/activity.enum';
+import { Owner } from '../../domain/owner.enum';
+import { FlipCard } from '../../domain/flipCard.entity';
 
 @Component({
   selector: 'card',
@@ -16,7 +19,7 @@ export class CardComponent implements AfterViewInit {
   @ViewChild('card') miElemento!: ElementRef;
   @Input() 
   cardEntity!: CardEntity;
-
+  public Owner = Owner;
   private static contadorId = 0;
   public componentId: string;
   public isFlipped = true;
@@ -25,17 +28,29 @@ export class CardComponent implements AfterViewInit {
 
   constructor(private gameService: GameService) {
     CardComponent.contadorId++;
-    this.componentId = `mi-componente-${CardComponent.contadorId}`;
+    this.componentId = `card-${CardComponent.contadorId}`;
     this.game = this.gameService.game;
   }
 
   ngAfterViewInit(): void {
-    // console.log('Elemento capturado:', this.miElemento);
-    // console.log('ID del elemento:', this.miElemento.nativeElement.id);
     
+    this.game.subscribe(
+      ((message: Message) => {
+        this.manageMessages(message);          
+      }),
+    )
   }
 
-  flipCard() {
+  private manageMessages(message: Message) {
+    if (message.activity == Activity.FLIP_CARD && message.flipCard) {
+      const flipCard: FlipCard = message.flipCard;
+      if (flipCard.idFlipCard == this.cardEntity.id && flipCard.owner == Owner.SYSTEM && !this.isFlipped) {
+        this.flipCard(flipCard.owner);
+      }
+    }
+  }
+
+  flipCard(owner: Owner) {
     if (!this.gameService.isGameStart) {
       return;
     }
@@ -44,7 +59,8 @@ export class CardComponent implements AfterViewInit {
 
     setTimeout(() => {
       this.disableHover = false; 
-      this.game.next({cardValue: this.cardEntity.value});
+      if (owner == Owner.USER)
+        this.game.next({activity: Activity.STACK_CARD, stackCard: this.cardEntity });
     }, 200);
   }
 }

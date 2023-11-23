@@ -1,13 +1,17 @@
 <div class="container">
     <div class="card-container">
         <div #card class="card" [ngClass]="{'is-flipped': isFlipped, 'no-hover': disableHover}" 
-            (click)="flipCard()" [style.width.px]="cardEntity.width" [style.height.px]="cardEntity.height">
+            (click)="flipCard(Owner.USER)" [style.width.px]="cardEntity.width" [style.height.px]="cardEntity.height">
             <div class="card-face card-front">
                 <!-- Contenido del frente de la carta, por ejemplo, un número y un símbolo -->
                 <div class="card-value card-index top-left"></div>
                 <div class="card-index top-left">
-                    <div class="index-value">{{ this.cardEntity.value }}</div>
-                    <div class="suit">&hearts;</div>
+                    <div class="index-value">
+                        {{ cardEntity.value }}
+                    </div>
+                    <div class="suit">
+                        {{cardEntity.suite}}
+                    </div>
                   </div>
                   <div class="card-index bottom-right">
                     <div class="index-value">{{ this.cardEntity.value  }}</div>
