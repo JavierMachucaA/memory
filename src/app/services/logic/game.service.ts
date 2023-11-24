@@ -47,7 +47,7 @@ export class GameService {
   
   private flipCards() {
       // console.log("flipCards");
-      console.log(this.pairCards[0].id, this.pairCards[1].id);
+      // console.log(this.pairCards[0].id, this.pairCards[1].id);
       this.game.next(this.getMessageFlipCard(this.pairCards[0].id))
       this.game.next(this.getMessageFlipCard(this.pairCards[1].id))
       this.pairCards = [];
@@ -58,6 +58,8 @@ export class GameService {
   }
 
   private stackCards(cardEntity: CardEntity) {
+    // console.log(cardEntity);
+    
     if (cardEntity.value != '' ) {
       this.pairCards.push(cardEntity);
     }
@@ -86,14 +88,14 @@ export class GameService {
         // console.log('match for p2:',this.pairCards)
         this.player2Cards.push(this.pairCards[0]);
       }
-      this.pairCards = []
       this.game.next(this.getMessagePairMatch());
+      this.pairCards = []
       
       setTimeout(() => {
         this.game.next(this.getMessageChangeScore());
         this.validateGameOver();  
         this.lockCardsSubject.next(this.getMessageLockCard(false));
-      }, 500);
+      }, 10);
     } else {
       // console.log('no match:',this.pairCards);
       this.lockCardsSubject.next(this.getMessageLockCard(true));
@@ -101,7 +103,7 @@ export class GameService {
         this.flipCards();
         this.changeTurn();
         this.lockCardsSubject.next(this.getMessageLockCard(false));
-      }, 2000);
+      }, 1000);
     }
   } 
 
@@ -150,6 +152,7 @@ export class GameService {
   private getMessagePairMatch() : Message {
     return {
       activity: Activity.PAIR_MATCH,
+      pairMatch: { listId: this.pairCards.map(p=>p.id), player: this.isPlayer1Turn ? 1 : 2 }
     }
   }
 

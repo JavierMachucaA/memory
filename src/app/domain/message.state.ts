@@ -3,6 +3,7 @@ import { CardEntity } from "./card.entity";
 import { Score } from "./changeTurn.entity";
 import { FlipCard } from "./flipCard.entity";
 import { LockCard } from "./lockCard.entity";
+import { PairMatch } from "./pairMatch.entity";
 
 export interface Message {
     activity: Activity;
@@ -10,4 +11,5 @@ export interface Message {
     flipCard?: FlipCard;
     score?: Score;
     lockCard?:LockCard;
+    pairMatch?: PairMatch;
 }

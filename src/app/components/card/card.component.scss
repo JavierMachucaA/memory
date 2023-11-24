@@ -1,126 +1,187 @@
 .card {
-    // width: 200px;
-    // height: 280px;
-    border-radius: 10px;
-    perspective: 1000px;
-    position: relative;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-    transform-style: preserve-3d;
-    transition: transform 0.5s;
-    cursor: pointer;
-    // margin:2px;
-  }
-  
-  .card-face {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    backface-visibility: hidden;
-    transition: transform 0.5s;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-  }
-  
-  .card-front {
-    background-color: #fff;
-  }
-  
-  .card-back {
-    background-color: #0075be;
-    background-image: linear-gradient(135deg, #006ba1 25%, transparent 25%, transparent 50%, #006ba1 50%, #006ba1 75%, transparent 75%, transparent);
-    background-size: 50px 50px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transform: rotateY(180deg);
-  }
-  
-  /* Estilo para el valor de la carta */
-  .card-value {
-    font-size: 2em;
-  }
-  
-  /* Giro de la carta */
-  .card.is-flipped .card-front {
-    transform: rotateY(180deg);
-  }
-  
-  .card.is-flipped .card-back {
-    transform: rotateY(0deg);
-  }
-  
-  /* Desactivación de hover con la clase .no-hover */
-  .no-hover:hover {
-    transform: none !important;
-    box-shadow: none !important;
-    //cursor: none;
-  }
-  
-  /* Efectos de hover */
-  .card:not(.no-hover):hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-  }
-  
-  /* Alinear texto a la derecha */
-  .align-right {
-    text-align: right;
-  }
-  
-  .container {
-    display: flex;
-    align-items: start; /* Asegura que los elementos estén alineados en la parte superior */
+  // width: 200px;
+  // height: 280px;
+  border-radius: 10px;
+  perspective: 1000px;
+  position: relative;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transform-style: preserve-3d;
+  transition: transform 0.5s;
+  cursor: pointer;
+  // margin:2px;
+}
+
+.card-face {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  backface-visibility: hidden;
+  transition: transform 0.5s;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.card-front {
+  background-color: #fff;
+}
+
+.card-back {
+  background-color: #0075be;
+  background-image: linear-gradient(135deg, #006ba1 25%, transparent 25%, transparent 50%, #006ba1 50%, #006ba1 75%, transparent 75%, transparent);
+  background-size: 50px 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform: rotateY(180deg);
+}
+
+/* Estilo para el valor de la carta */
+.card-value {
+  font-size: 2em;
+}
+
+/* Giro de la carta */
+.card.is-flipped .card-front {
+  transform: rotateY(180deg);
+}
+
+.card.is-flipped .card-back {
+  transform: rotateY(0deg);
+}
+
+/* Desactivación de hover con la clase .no-hover */
+.no-hover:hover {
+  transform: none !important;
+  box-shadow: none !important;
+  //cursor: none;
+}
+
+/* Efectos de hover */
+.card:not(.no-hover):hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Alinear texto a la derecha */
+.align-right {
+  text-align: right;
+}
+
+.container {
+  display: flex;
+  align-items: start;
+  /* Asegura que los elementos estén alineados en la parte superior */
+}
+
+.additional-div {
+  /* Estilos para el div adicional van aquí */
+  margin-left: 0px;
+  /* O el espacio que prefieras entre los dos divs */
+  /* Otros estilos... */
+}
+
+.card-index {
+  position: absolute;
+  font-size: 1.5em;
+  /* Ajustar según el diseño */
+}
+
+.top-left {
+  top: 10px;
+  left: 10px;
+}
+
+.bottom-right {
+  bottom: 10px;
+  right: 10px;
+  transform: rotate(180deg);
+  /* Rota el índice para que esté en la dirección correcta */
+}
+
+.suit {
+  color: red;
+  /* Los corazones suelen ser de color rojo */
+}
+
+.large {
+  font-size: 5em;
+  /* Tamaño grande para el corazón central */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  /* Centra el corazón en la carta */
+}
+
+@keyframes twinkling {
+
+  0%,
+  100% {
+    transform: scale(1);
+    /* Tamaño original */
+    opacity: 1;
+    /* Totalmente visible */
   }
 
-  .additional-div {
-    /* Estilos para el div adicional van aquí */
-    margin-left: 0px; /* O el espacio que prefieras entre los dos divs */
-    /* Otros estilos... */
+  50% {
+    transform: scale(1.01);
+    /* Un poco más grande */
+    opacity: 0.7;
+    /* Ligeramente transparente */
   }
+}
 
-  .card-index {
-    position: absolute;
-    font-size: 1.5em; /* Ajustar según el diseño */
-  }
+.component-twinkling {
+  animation: twinkling 1s ease-in-out 0s 1.5;
+  /* Duración, tipo de animación, retardo, repeticiones */
+}
 
-  .top-left {
-    top: 10px;
-    left: 10px;
-  }
+.disappear {
+  opacity: 0.5;
+}
 
-  .bottom-right {
-    bottom: 10px;
-    right: 10px;
-    transform: rotate(180deg); /* Rota el índice para que esté en la dirección correcta */
-  }
-  
-  .suit {
-    color: red; /* Los corazones suelen ser de color rojo */
-  }
-  
-  .large {
-    font-size: 5em; /* Tamaño grande para el corazón central */
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%); /* Centra el corazón en la carta */
-  }
+.player-match-mark-player1 {
+  position: absolute;
+  top: -4px;
+  left: -2px;
+  z-index: 10;
+  color: white; /* Color del texto */
+  padding: 10px; /* Espaciado interno para el texto */
+  font-size: 14px; /* Tamaño del texto */
+  transform-origin: 0 0; /* El origen de la rotación es la esquina superior izquierda */
+  border-radius: 0 0 0 2px; /* Borde redondeado en la esquina inferior izquierda del texto */
+}
 
-  @keyframes twinkling {
-    0%, 100% {
-      transform: scale(1); /* Tamaño original */
-      opacity: 1; /* Totalmente visible */
-    }
-    50% {
-      transform: scale(1.01); /* Un poco más grande */
-      opacity: 0.7; /* Ligeramente transparente */
-    }
-  }
-  
-  .component-twinkling {
-    animation: twinkling 1s ease-in-out 0s 1.5; /* Duración, tipo de animación, retardo, repeticiones */
-  }
+.player-match-mark-player2 {
+  position: absolute;
+  top: -4px;
+  left: -2px;
+  z-index: 10;
+  color: white; /* Color del texto */
+  padding: 10px; /* Espaciado interno para el texto */
+  font-size: 14px; /* Tamaño del texto */
+  transform-origin: 0 0; /* El origen de la rotación es la esquina superior izquierda */
+  border-radius: 0 0 0 2px; /* Borde redondeado en la esquina inferior izquierda del texto */
+}
 
-  .disappear {
-    opacity: 0.5;
-  }
+.player-match-mark-player1::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  height: 0;
+  border-top: 50px solid red; /* Altura del triángulo */
+  border-right: 50px solid transparent; /* Ancho del triángulo */
+  transform: scaleX(1.4); /* Escala el triángulo para que sobresalga más allá del borde de la carta */
+  z-index: -1; /* Posiciona el triángulo detrás del texto */
+}
+
+.player-match-mark-player2::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  height: 0;
+  border-top: 50px solid blue; /* Altura del triángulo */
+  border-right: 50px solid transparent; /* Ancho del triángulo */
+  transform: scaleX(1.4); /* Escala el triángulo para que sobresalga más allá del borde de la carta */
+  z-index: -1; /* Posiciona el triángulo detrás del texto */
+}

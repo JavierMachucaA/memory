@@ -14,16 +14,23 @@
                     </div>
                   </div>
                   <div class="card-index bottom-right">
-                    <div class="index-value">{{ this.cardEntity.value  }}</div>
+                    <div class="index-value">{{ this.cardEntity.value }}</div>
                     <div class="suit">&hearts;</div>
                   </div>
                 <!-- Agrega símbolos o imágenes si es necesario -->
                 <div class="card-main">
                     <span class="suit large">&hearts;</span>
-                  </div>
+                </div>
+                @if (playerLockCard > 0) {
+                    <div [class.player-match-mark-player1]="playerLockCard == 1">
+                        <span>{{'P1'}}</span>
+                    </div>
+                    <div [class.player-match-mark-player2]="playerLockCard == 2">
+                        <span>{{'P2'}}</span>
+                    </div>
+                }
             </div>
             <div class="card-face card-back">
-                <!-- Contenido del dorso de la carta -->
             </div>
         </div>
     </div>

@@ -29,6 +29,7 @@ export class CardComponent implements AfterViewInit {
   public isTwinkling = false;
   public isDisappear = false;
   public lockCard = false;
+  public playerLockCard : number = 0;
 
   constructor(private gameService: GameService) {
     CardComponent.contadorId++;
@@ -45,7 +46,7 @@ export class CardComponent implements AfterViewInit {
     )
     this.lockCardSubject.subscribe(
       ((message: Message) => {
-        console.log(message);
+        // console.log(message);
         this.lockCardActivity(message);      
       }),
     )
@@ -76,15 +77,18 @@ export class CardComponent implements AfterViewInit {
   }
 
   private pairMatch(message: Message) {
-    if (message.activity == Activity.PAIR_MATCH) {
-      this.animateCard()
+    if (message.activity == Activity.PAIR_MATCH && message.pairMatch) {
+      this.animateCard(message)
     }
   }
 
-  private animateCard() {
+  private animateCard(message: Message) {
     this.lockCard = true;
+    if (message.pairMatch?.listId.findIndex(x=>x == this.cardEntity.id) == -1 )
+      return;
     this.twinkling();
     this.disappear();
+    this.playerLockCard = message.pairMatch?.player || 0;
     setTimeout(() => {
       this.lockCard = false;
     }, 500);
