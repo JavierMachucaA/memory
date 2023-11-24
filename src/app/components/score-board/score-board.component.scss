@@ -9,3 +9,14 @@ td {
     text-align: center; /* Center content horizontally */
     vertical-align: middle; /* Center content vertically */
 }
+
+.score-board-main {
+    display: flex; /* Flexbox para alinear los elementos horizontalmente */
+    align-items: center; /* Centra los elementos verticalmente */
+    justify-content: space-between; /* Espacia los elementos uniformemente */
+}
+
+.message-left, .message-right {
+    flex: 1; /* Hace que los mensajes ocupen el espacio disponible */
+    text-align: center; /* Centra el texto dentro de los mensajes */
+}

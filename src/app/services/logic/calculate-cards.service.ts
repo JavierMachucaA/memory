@@ -34,8 +34,8 @@ export class CalculateCardsService {
     
     // Calcular número total de tarjetas
     this.cardsTotalPoolCount = this.cardsRowCount * this.rowCount;
-    if (this.cardsTotalPoolCount%2!=0) {
-      this.cardsTotalPoolCount-=1;
+    if (this.cardsTotalPoolCount % 2 != 0) {
+      this.cardsTotalPoolCount -= 1;
     }
     return this.cardsTotalPoolCount;
   }

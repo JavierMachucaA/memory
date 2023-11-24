@@ -29,7 +29,7 @@ export class CardContentService {
     }
 
     // Barajar los valores
-    //this.shuffleArray(this.outPutArrayValues);
+    this.shuffleArray(this.outPutArrayValues);
     return this.outPutArrayValues;
   }
 

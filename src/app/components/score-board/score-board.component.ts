@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { GameService } from '../../services/game.service';
+import { GameService } from '../../services/logic/game.service';
 import { BehaviorSubject } from 'rxjs';
 import { Message } from '../../domain/message.state';
 import { Activity } from '../../domain/activity.enum';
@@ -20,6 +20,8 @@ export class ScoreBoardComponent {
   public pairsPlayer2: number = 0;
   public pointsPlayer1: number = 0;
   public pointsPlayer2: number = 0;
+  public messageGameOver1 : string = '';
+  public messageGameOver2 : string = '';
 
   constructor(public gameService: GameService) {
     this.game = this.gameService.game;
@@ -34,12 +36,22 @@ export class ScoreBoardComponent {
   private hearGame() {
     this.game.subscribe(
       ((message: Message) => {
-        console.log(message, message.activity.toString());
-        if (message.activity == Activity.SCORE && message.score) {
-          this.changeScore(message.score)
-        }
+        this.activityChangeScore(message);
+        this.activityGameOver(message);
       }),
     );
+  }
+
+  private activityChangeScore(message: Message) {
+    if (message.activity == Activity.SCORE && message.score) {
+      this.changeScore(message.score);
+    }
+  }
+
+  private activityGameOver(message: Message) {
+    if (message.activity == Activity.GAME_OVER) {
+      this.showGameOver();
+    }
   }
 
   private changeScore(score: Score) {
@@ -54,6 +66,22 @@ export class ScoreBoardComponent {
     }
   }
 
+  private showGameOver() {
+    
+    // The player with the most points wins
+    if (this.pointsPlayer1 == this.pointsPlayer2) {
+      // DRAW
+      this.messageGameOver1 = this.messageGameOver2 = 'PLAYER 1 AND PLAYER 2 DRAW';
+    }
+    if (this.pointsPlayer1 > this.pointsPlayer2) {
+      // PLAYER 1 WINS
+      this.messageGameOver1 = 'PLAYER 1 WINS';
+    } else {
+      // PLAYER 2 WINS
+      this.messageGameOver2 = 'PLAYER 2 WINS';
+    } 
+  }
+
   //ACCESSORS
   get isGameStart() {
     return this.gameService.isGameStart;
@@ -66,4 +94,5 @@ export class ScoreBoardComponent {
   get isPlayer2Turn () {
     return this.gameService.isPlayer2Turn;
   }
+
 }

@@ -6,7 +6,7 @@ import { CardEntity } from './domain/card.entity';
 import { CalculateCardsService } from './services/logic/calculate-cards.service';
 import { CardContentService } from './services/logic/card-content.service';
 import { ScoreBoardComponent } from './components/score-board/score-board.component';
-import { GameService } from './services/game.service';
+import { GameService } from './services/logic/game.service';
 import { HEART } from './util/suits.constants';
 
 @Component({
@@ -56,6 +56,7 @@ export class AppComponent implements AfterViewInit {
     this.calculateCardsService.widthTable  = this.elemento.nativeElement.offsetHeight;
     // console.log(`Ancho: ${this.calculateCardsService.heightTable}px, Alto: ${this.calculateCardsService.widthTable}px`);
     this.cardsCount = this.calculateCardsService.calculateCards();
+    this.gameService.totalCards = this.cardsCount;
     this.cardsRowCount = this.calculateCardsService.cardsRowCount;
     this.rowCount = this.calculateCardsService.rowCount;
     this.valuesCards = this.cardContentService.setCardValues(this.cardsCount);

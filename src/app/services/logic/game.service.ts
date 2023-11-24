@@ -1,62 +1,25 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { Message } from '../domain/message.state';
-import { Activity } from '../domain/activity.enum';
-import { CardEntity } from '../domain/card.entity';
-import { Owner } from '../domain/owner.enum';
+import { BehaviorSubject } from 'rxjs';
+import { Activity } from '../../domain/activity.enum';
+import { CardEntity } from '../../domain/card.entity';
+import { Message } from '../../domain/message.state';
+import { Owner } from '../../domain/owner.enum';
 
-/**
- *   LOGIC
-  block table
-  press start
-  player 1 start
-  click on 2 cards
-  if are the same number and suit
-    twinkling and disappear
-    additon to pairs and points to the player turn
-    not change turn
-  else
-    flip the cards 
-    change turn
-  
- */
 @Injectable({
   providedIn: 'root'
 })
 export class GameService {
   private _isGameStart = false;
-  private pairCards: CardEntity[] = []
-  private _player1Cards: any[] = [];
-  private _player2Cards: any[] = [];
-
-  /** OBSERVABLE
-     Implements observable game variable on the first step admin all actions, but later separate observables for recover differents thinks like:
-    1 - player turn
-    2 - points
-    3 - twinkling and disappear
-    4 - flip cards
-   */
-  
-  public game = new BehaviorSubject<Message>({activity: Activity.STANDBY});
-  
-    
+  private _totalCards: number = 0;
   private _isPlayer1Turn: boolean = false;
   private _isPlayer2Turn: boolean = false;
-  
-  /**
-   * ACTIONS
-     TODO: actions to resolve
-      1 change turn READY 
-      2 recieve cardValue
-      3 stack 2 cards
-      4 twinkling
-      5 disappear
-      6 get player turn
-      7 add pairs and points the player turn
-      8 flip cards
-      
-   */
+  private pairCards: CardEntity[] = []
+  private _player1Cards: CardEntity[] = [];
+  private _player2Cards: CardEntity[] = [];
 
+  public game : BehaviorSubject<Message> = new BehaviorSubject<Message>({activity: Activity.STANDBY});
+  public lockCardsSubject: BehaviorSubject<Message> = new BehaviorSubject<Message>({activity: Activity.STANDBY});
+  
   constructor() {
     this.game.subscribe(
       ((value: Message) => {
@@ -79,11 +42,12 @@ export class GameService {
     }
     this.isPlayer1Turn = !this.isPlayer1Turn;
     this.isPlayer2Turn = !this.isPlayer2Turn;
-    console.log('change turn to', this.isPlayer1Turn, this.isPlayer2Turn);
+    // console.log('change turn to', this.isPlayer1Turn, this.isPlayer2Turn);
   }
   
   private flipCards() {
-      console.log("flipCards");
+      // console.log("flipCards");
+      console.log(this.pairCards[0].id, this.pairCards[1].id);
       this.game.next(this.getMessageFlipCard(this.pairCards[0].id))
       this.game.next(this.getMessageFlipCard(this.pairCards[1].id))
       this.pairCards = [];
@@ -97,42 +61,72 @@ export class GameService {
     if (cardEntity.value != '' ) {
       this.pairCards.push(cardEntity);
     }
-
+    
     if (this.pairCards.length < 2) {
       return;
     }
-    console.log('stacked cards:', this.pairCards);
+    // console.log('stacked cards:', this.pairCards);
     
     // same card
-    this.sameCard()
+    this.isSameCard()
   }
 
-  private sameCard() {
+  private isSameCard() {
+    
   // same card
     if (this.pairCards[0].value == this.pairCards[1].value && 
         this.pairCards[0].suite == this.pairCards[1].suite) {
+      this.lockCardsSubject.next(this.getMessageLockCard(true));
       if(this.isPlayer1Turn) {
-        console.log('match for p1:',this.pairCards)
+        // console.log('match for p1:',this.pairCards)
         this.player1Cards.push(this.pairCards[0]);
       }
 
       if(this.isPlayer2Turn) {
-        console.log('match for p2:',this.pairCards)
+        // console.log('match for p2:',this.pairCards)
         this.player2Cards.push(this.pairCards[0]);
       }
       this.pairCards = []
-      this.game.next(this.getMessageChangeScore());
       this.game.next(this.getMessagePairMatch());
+      
+      setTimeout(() => {
+        this.game.next(this.getMessageChangeScore());
+        this.validateGameOver();  
+        this.lockCardsSubject.next(this.getMessageLockCard(false));
+      }, 500);
     } else {
-      console.log('no match:',this.pairCards);
+      // console.log('no match:',this.pairCards);
+      this.lockCardsSubject.next(this.getMessageLockCard(true));
       setTimeout(() => {
         this.flipCards();
         this.changeTurn();
+        this.lockCardsSubject.next(this.getMessageLockCard(false));
       }, 2000);
     }
   } 
 
-  private getMessageFlipCard(id: number) {
+  private getMessageLockCard(isLockCard: boolean) : Message {
+    return {
+      activity: Activity.LOCK_CARDS, 
+      lockCard: {
+        isLockCard: isLockCard
+      }
+    };
+  }
+
+  private validateGameOver() {
+    // console.log(this.player1Cards.length, this.player2Cards.length, this._totalCards);
+    const totalPairs = (this.player1Cards.length + this.player2Cards.length) * 2;
+    if ( totalPairs == this._totalCards) {
+      this.gameOver();
+    }
+  }
+
+  private gameOver() {
+    this.game.next(this.getMessageGameOver());
+  }
+
+  private getMessageFlipCard(id: number) : Message {
     return {
       activity: Activity.FLIP_CARD, 
       flipCard: {
@@ -142,7 +136,7 @@ export class GameService {
     }
   }
 
-  private getMessageChangeScore() {
+  private getMessageChangeScore() : Message {
     return {
       activity: Activity.SCORE, 
       score: {
@@ -153,9 +147,15 @@ export class GameService {
     }
   }
 
-  private getMessagePairMatch() {
+  private getMessagePairMatch() : Message {
     return {
       activity: Activity.PAIR_MATCH,
+    }
+  }
+
+  private getMessageGameOver() : Message {
+    return {
+      activity: Activity.GAME_OVER,
     }
   }
 
@@ -200,4 +200,11 @@ export class GameService {
     this._player2Cards = value;
   }
 
+  public get totalCards(): number {
+    return this._totalCards;
+  }
+
+  public set totalCards(value: number) {
+    this._totalCards = value;
+  }
 }
